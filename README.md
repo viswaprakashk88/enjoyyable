@@ -25,18 +25,21 @@ Note: Never create an additional process.env files. Just put everything in .env 
 Using MD5 in React.js Frontend: (No longer in the application)
 -	Install MD5 using npm install md5
 -	Use it this way:
-import md5 from “md5”;
-const hashedPassword = md5(e.target.password.value);
+``import md5 from “md5”;
+const hashedPassword = md5(e.target.password.value);``
+
 Note: MD5 Hashing technique is not a strong hashing technique because the Rainbow Table Attack may reveal the password.
 Switching to bcrypt:
 Escaping from the Wrong Route in React.js:
 -	Use useEffect to solve this problem. 
 -	Keep navigate as dependency in the useEffect.
+
 Code:
-useEffect(() => {
+``useEffect(() => {
 if (window.localStorage.getItem(“username”) === null) {
 	navigate(“/LoginPage”);
 }, [navigate]);
+``
 -	Set this code according to the requirement.
  
 Use a Transaction (Recommended for Consistency)
