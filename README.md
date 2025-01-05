@@ -9,6 +9,7 @@ Connecting AWS DynamoDB with Node.js backend:
 -	Click on Create User
 -	Later, click on Create Access Key
 -	Copy the Access Key and Secret Access Key
+
 Coming to the Node.js Backend,
 -	Install AWS SDK using npm install aws-sdk command.
 -	Import aws-sdk package to access the DynamoDB table’s data.
