@@ -1,6 +1,6 @@
 # enjoyyable
 
-APPLICATION NOTES
+
 Connecting AWS DynamoDB with Node.js backend:
 -	Open IAM Dashboard in AWS Console.
 -	Click on create user. 
