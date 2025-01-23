@@ -19,8 +19,8 @@ app.use(cors({
 
 app.use(express.json());
 
-var CLIENT_ID = 'f4144083fb1c4f58bada3b64b623cd7b';
-var CLIENT_SECRET = '1df80b623981441fbcff2859408b8d77';
+var CLIENT_ID = '';
+var CLIENT_SECRET = '';
 var REDIRECT_URI = 'https://localhost:3001';
 
 app.options('*', cors());
@@ -72,7 +72,7 @@ io.on("connection", (socket) => {
 });
 
 
-//Get All Items of a table from AWS DynamoDB
+//Route to test the AWS API
 app.get("/scatter", (req, res) => {
     const documentClient = new AWS.DynamoDB.DocumentClient();
     const params = {
