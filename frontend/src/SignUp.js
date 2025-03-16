@@ -88,18 +88,18 @@ function SignUp() {
                             <tbody>
                                 <tr>
                                     <td className = "td">
-                                        <input className = "loginbar" type = "text" id = "name" name = "name" placeholder = "Enter Your Name" pattern = "[A-Za-z ]{3,}" autoFocus required/>
+                                        <input className = "loginbar" type = "text" id = "name" name = "name" placeholder = "Enter Your Name" pattern = "[A-Za-z ]{3,}" autoFocus spellcheck="false" required/>
                                     </td>
                                     <td className = "td">
-                                        <input className = "loginbar" type = "text" id = "username" name = "username" placeholder = "Select a Username" required/>
+                                        <input className = "loginbar" type = "text" id = "username" name = "username" placeholder = "Select a Username" spellcheck="false" required/>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td className = "td">
-                                        <input className = "loginbar" type = "email" id = "email" name = "email" placeholder = "Enter Email" required/>
+                                        <input className = "loginbar" type = "email" id = "email" name = "email" placeholder = "Enter Email" spellcheck="false" required/>
                                     </td>
                                     <td className = "td">
-                                        <input className = "loginbar" type = "tel" id = "mobile" name = "mobile" placeholder = "Enter Your Mobile Number" required />
+                                        <input className = "loginbar" type = "tel" id = "mobile" name = "mobile" placeholder = "Enter Your Mobile Number" spellcheck="false" required />
                                     </td>
                                 </tr>
                                 <tr>

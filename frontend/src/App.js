@@ -25,13 +25,13 @@ function App(){
             window.localStorage.removeItem("searchedUser");
             window.localStorage.removeItem("searchedUserList");
         }
-        if (window.localStorage.getItem("searchedSongsList")) {
+        if (window.localStorage.getItem("searchedSongName")) {
             window.localStorage.removeItem("searchedSongName");
             window.localStorage.removeItem("searchedSongsList");
-            console.log("thisesa");
-
         }
-
+        if (window.localStorage.getItem("friendsList")) {
+            window.localStorage.removeItem("friendsList");
+        }
         const accessTokenChecker = async () => {
         
             if(!window.localStorage.getItem('accessToken')){
@@ -80,7 +80,7 @@ function App(){
     return (
         <div>   
             <center style = {{padding: "10px 8px 8px 8px"}}>
-                <h1 style = {{fontSize: "42px"}}>Enjoyabl</h1>
+                <h1 style = {{fontSize: "42px", textShadow: "1.5px 1.5px 7px #4ac9f0"}}>Enjoyabl</h1>
             </center>
             {code || window.localStorage.getItem("accessToken") ? "" : <Login/>}
 

@@ -51,6 +51,9 @@ function Navigation() {
             window.localStorage.removeItem("searchedSongList");
             console.log("removing searchedSongsName");
         }
+    },[]);
+
+    useEffect ( () => {
         async function getRequests () {
             var requests = await fetch("https://localhost:3001/getAllRequests", {
                 method : "POST",
@@ -67,12 +70,13 @@ function Navigation() {
             window.localStorage.setItem("requestsCount", requests["items"].length);
         }
         getRequests();
-    },[]);
+    }, []);
 
     useEffect( () => {
         if (tabNumber !== 2 && window.localStorage.getItem("connections") && !window.localStorage.getItem("searchedUser")) {
             window.localStorage.removeItem("connections");
         }
+        handleAccessTokenExpiry();
     }, [tabNumber]);
 
     const handleLogout = () => {
@@ -81,10 +85,27 @@ function Navigation() {
         navigate("/");
     }
 
+    const handleAccessTokenExpiry = async () => {
+        const currentDateTime = new Date();
+        const presentTime =currentDateTime.getTime() + '';
+        const localStorageTime = new Date(window.localStorage.getItem('accessTokenTime') + '');
+        const lastTokenTime = localStorageTime.getTime() + '';
+        const timeGapAccessToken = Math.floor((presentTime - lastTokenTime)/1000);
+        const refreshToken = window.localStorage.getItem('refreshToken');
+        if (timeGapAccessToken > 3600) {
+            var accessTokenRefresh = await fetch('https://localhost:3001/refreshToken?refreshToken=' + refreshToken, {
+                method : 'GET'
+            });
+            accessTokenRefresh = await accessTokenRefresh.json();
+            window.localStorage.setItem('accessToken', accessTokenRefresh.accessToken);
+            window.localStorage.setItem('accessTokenTime', currentDateTime);
+        }
+
+    }
     return (
         <div>
             <div className = "profile-section">
-                <i class="fa fa-user profile-icon" aria-hidden="true" id = "profileIcon" onMouseOver = {() => {setProfileHover(true)} } onMouseLeave = { () => {setTimeout(() => {setProfileHover(false)}, 2000)} }></i>
+                <i className="fa fa-user profile-icon" aria-hidden="true" id = "profileIcon" onMouseOver = {() => {setProfileHover(true)} } onMouseLeave = { () => {setTimeout(() => {setProfileHover(false)}, 2000)} }></i>
                 <div>
                     <ul id = "profileDropdown" onMouseOver={() => {setProfileHover(true)}} onMouseLeave={() => {setProfileHover(false)}} style = {{display: profileHover ? "inline" : "none"}}>
                         <li onClick = {() => {console.log("good profile");}}>Profile</li>

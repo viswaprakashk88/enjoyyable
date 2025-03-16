@@ -1,0 +1,28 @@
+import React, { useContext } from 'react';
+import { PlayerContext } from '.';
+
+function GroupCard ({groupData}) {
+    const groupName1 = groupData.groupName.split(" ").map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(" ");
+    const groupMembers = groupData.groupMembers.split("#&#").slice(0,-1).join(", @").slice(0,30) + "...";
+    const {groupName, setGroupName, setGroupTab, groupTab} = useContext(PlayerContext);
+    const handleGroupCardClick = () => {
+        setGroupName(groupName1);
+        setGroupTab(3);
+        console.log(groupData.groupName + ", " +groupTab);
+    };
+    return (
+        <>
+            <tr onClick = {handleGroupCardClick} className = "groupCard">
+                <td className = "groupCardName">
+                    <h4>{groupName1}</h4>
+                    <h6>@{groupMembers}</h6>
+                </td>
+            </tr>
+            <tr>
+                <td style = {{margin: "10px"}}></td>
+            </tr>
+        </>
+    );
+}
+
+export default GroupCard;

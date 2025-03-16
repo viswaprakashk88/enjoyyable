@@ -15,6 +15,52 @@ function Player () {
   const [isStarted, setIsStarted] = useState(false);
   const [deviceId, setDeviceId] = useState("");
   
+
+  useEffect( () => {
+    //function to play a song
+    const playSong = ({songDetails},deviceId) => {
+
+      clearInterval(intervalForSlider);
+      setIsPlaying(true);
+
+      if (isPlaying) {
+        intervalForSlider = setInterval( () => {
+          setSliderValue(prevValue => prevValue + 100);
+        }, 100);
+        if (sliderValue > songDetails.duration_ms) {
+          clearInterval(intervalForSlider);
+        }
+      }
+
+      fetch('https://api.spotify.com/v1/me/player/play?device_id=' + deviceId, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uris: [songDetails ? songDetails.uri : null]
+        }),
+      })
+        .then(response => { 
+          if (response.ok) {
+            console.log('Playback started!');
+          } else {
+            console.error('Failed to start playback:', response.statusText);
+          }
+        })
+        .catch(error => {
+          console.error('Error starting playback:', error);
+        });
+    }
+
+    if (deviceId !== "") {
+      playSong({songDetails}, deviceId);
+    }
+    
+
+  }, [songDetails]);
+
   useEffect( () => {
     spotifyPlayer.connect().then(success => {
       if (success) {
@@ -23,6 +69,7 @@ function Player () {
       else{
           console.log("Failed")
       }
+  
     });
     //ready Listener for spotifyPlayer
     spotifyPlayer.addListener('ready', ({device_id}) => {
@@ -93,70 +140,9 @@ function Player () {
 
   }, [socket]);
 
-  // useEffect( async () => {
-  //   if (sliderValue > songDetails.duration_ms) {
-  //     console.log("exceeded");
-  //     // setSongDetails(JSON.parse(window.localStorage.getItem("next_songDetails")));
-  //     // var res = await fetch("https://api.spotify.com/v1/me/player/queue", {
-  //     //   method: 'PUT',
-  //     //   headers: {
-  //     //     'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
-  //     //     'Content-Type': 'application/json',
-  //     //   },
-  //     //   body: JSON.stringify({
-  //     //     uris: [songDetails ? songDetails.uri : null]
-  //     //   })}
-  //     // );
-  //     // res = await res.json();
-  //     // console.log(res);
-  //   }
+  
 
-  // },[sliderValue]);
-
-  useEffect( () => {
-    //function to play a song
-    const playSong = ({songDetails},deviceId) => {
-
-      clearInterval(intervalForSlider);
-      setIsPlaying(true);
-
-      if (isPlaying) {
-        intervalForSlider = setInterval( () => {
-          setSliderValue(prevValue => prevValue + 100);
-        }, 100);
-        if (sliderValue > songDetails.duration_ms) {
-          clearInterval(intervalForSlider);
-        }
-      }
-
-      fetch('https://api.spotify.com/v1/me/player/play?device_id=' + deviceId, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uris: [songDetails ? songDetails.uri : null]
-        }),
-      })
-        .then(response => { 
-          if (response.ok) {
-            console.log('Playback started!');
-          } else {
-            console.error('Failed to start playback:', response.statusText);
-          }
-        })
-        .catch(error => {
-          console.error('Error starting playback:', error);
-        });
-    }
-
-    if (deviceId !== "") {
-      playSong({songDetails}, deviceId);
-    }
-    
-
-  }, [songDetails]);
+  
 
   //Function for play/pause button
   const togglePlay = () => {
@@ -200,7 +186,7 @@ function Player () {
         <div className = "left">
           <div className = "playerImageSection">
             <span>
-              <img src = {songDetails && songDetails.album.images.length > 0 && songDetails.album.images[0].url} style = { {width: "77px", height : "77px", border: "3px solid #8684f2", borderRadius: "5px" } }/>
+              <img src = {songDetails && songDetails.album.images.length > 0 && songDetails.album.images[0].url} style = { {width: "77px", height : "77px", border: "3px solid #8684f2", borderRadius: "5px", boxShadow : "3px 3px  3px 3px 7px #49f5a2" } }/>
             </span>
             <span>
               { songDetails && songDetails.name.length > 12 && 
@@ -214,11 +200,11 @@ function Player () {
         </div>
         <div className = 'center'>
           <center>
-            <b style = {{paddingTop : "10px"}}>{Math.floor(sliderValue/60000) < 10 && '0'}{Math.floor(sliderValue/60000)}:{Math.floor(sliderValue/1000) % 60 < 10 && '0'}{Math.floor(sliderValue/1000)  % 60}</b>
+            <b style = {{paddingTop : "10px", fontSize: "17px"}}>{Math.floor(sliderValue/60000) < 10 && '0'}{Math.floor(sliderValue/60000)}:{Math.floor(sliderValue/1000) % 60 < 10 && '0'}{Math.floor(sliderValue/1000)  % 60}</b>
             &emsp;
             <input type = "range" min = "0" value = {sliderValue} onChange = {handleSliderChange} max = {songDetails ? songDetails.duration_ms.toString() : 0} id = "playerSlider" />
             &emsp;
-            <b style = {{paddingTop : "10px"}}>{songDetails && songDetails.duration_ms/60000 < 10 && "0"}{songDetails ? Math.floor(songDetails.duration_ms/60000) : "0"}:{songDetails && (songDetails.duration_ms/1000)%60 < 10 && "0"}{songDetails ? Math.floor(songDetails.duration_ms/1000)%60 : "0"}</b>
+            <b style = {{paddingTop : "10px", fontSize: "17px"}}>{songDetails && songDetails.duration_ms/60000 < 10 && "0"}{songDetails ? Math.floor(songDetails.duration_ms/60000) : "0"}:{songDetails && (songDetails.duration_ms/1000)%60 < 10 && "0"}{songDetails ? Math.floor(songDetails.duration_ms/1000)%60 : "0"}</b>
             <br/>
             <i className = "fa-solid fa-backward-step fa-2xl paddingPlay" id = "backward"></i>
             <i className="fa-solid fa-play fa-2xl paddingPause" style = { {color: "#ddede8"} } onClick = {togglePlay} id = "toggleButton"></i>

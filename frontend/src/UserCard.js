@@ -4,11 +4,13 @@ function UserCard ({userData}) {
     const connections = JSON.parse(window.localStorage.getItem("connections"));
     const [friendStatus, setFriendStatus] = useState("Connect");
     var name = userData.name.split("#%#");
-    name = name[0] === window.localStorage.getItem("name") ? name[1] : name[0];
+    var name = name[0] === window.localStorage.getItem("name") ? name[1] : name[0];
     name = name.split(" ").map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(" ");
+    const presentName = window.localStorage.getItem("name");
     useEffect( () => {
         if (connections && userData.user in connections && document.getElementById("requestButton_" + userData.user)) {
-            setFriendStatus(connections[userData.user] === "friends" ? "✅Friends" : "Requested")
+
+            setFriendStatus(connections[userData.user] === "friends" ? "✅Friends" : (connections[userData.user] === "requested you" ? "Requested You" : "Request Sent"));
             
             document.getElementById("requestButton_" + userData.user).disabled = true;
             document.getElementById("requestButton_" + userData.user).classList.remove("userCardRequestButtonEnabled");
@@ -52,7 +54,12 @@ function UserCard ({userData}) {
                     <button id = {"requestButton_" + userData.user} className = "userCardRequestButton userCardRequestButtonEnabled" value = { userData.user + "&#&" + userData.name }  onClick = {request}>{friendStatus}</button>
                 </td>
             </tr>
-            <br/>
+            <tr className = "spacing">
+                <td></td>
+            </tr>
+            <tr className = "spacing">
+                <td></td>
+            </tr>
         </>
     );
 }

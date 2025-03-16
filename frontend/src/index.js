@@ -17,6 +17,7 @@ function IndexHelp () {
     const [songDetails, setSongDetails] = useState(extractedSong);
     const [partyMode, setPartyMode] = useState(false);
     const [groupTab, setGroupTab] = useState(1);
+    const [groupName, setGroupName] = useState("");
     //Spotify Web Playback Initialiazation
     document.title = "Enjoyabl";
     window.onSpotifyWebPlaybackSDKReady = async () => {
@@ -31,7 +32,7 @@ function IndexHelp () {
     }
     return (
         (spotifyPlayer) ?
-            (<PlayerContext.Provider value={{ spotifyPlayer, setSpotifyPlayer, songDetails, setSongDetails, partyMode, setPartyMode, groupTab, setGroupTab}}>
+            (<PlayerContext.Provider value={{ spotifyPlayer, setSpotifyPlayer, songDetails, setSongDetails, partyMode, setPartyMode, groupTab, setGroupTab, groupName, setGroupName}}>
                 <App />
             </PlayerContext.Provider> )
             :

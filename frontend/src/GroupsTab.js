@@ -1,14 +1,40 @@
 import React, { useContext, useState } from 'react';
 import { PlayerContext } from '.';
+import GroupCard from './GroupCard';
 
 function GroupsTab () {
     const {groupTab, setGroupTab} = useContext(PlayerContext);
+    const cachedGroups = window.localStorage.getItem("groups") ? JSON.parse(window.localStorage.getItem("groups")) : [];
+    const [groupsList, setGroupsList] = useState(cachedGroups || []);
+
+    useState( async () => {
+        if ( !window.localStorage.getItem("groups") ) {
+            var groups = await fetch ("https://localhost:3001/getGroups", {
+                method : "POST",
+                headers : {
+                    "Content-Type" : "application/json"
+                },
+                body : JSON.stringify({
+                    username : window.localStorage.getItem("username")
+                })
+            });
+        }
+        groups = await groups.json();
+        setGroupsList(groups.items);
+    }, []);
+
     return (
         <div>
             <center>
-                
+                <table>
+                    <tbody>
+                        {groupsList.map((item, index) => (
+                            <GroupCard key={index} data-index={index} groupData = {item} />
+                        ))}
+                    </tbody>
+                </table>
             </center>
-            <div class = "createGroupButton" onClick={ () => {setGroupTab(2)} }><i class="fa fa-plus" aria-hidden="true"></i> Create Group</div>
+            <div className = "createGroupButton" onClick={ () => {setGroupTab(2)} }><i className="fa fa-plus" aria-hidden="true"></i> Create Group</div>
         </div>
     );
 }

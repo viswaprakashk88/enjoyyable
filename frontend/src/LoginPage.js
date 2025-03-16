@@ -30,6 +30,7 @@ function LoginPage () {
         
         const loginSuccess = await fetch("https://localhost:3001/checkLoginCredentials?un=" + username + "&pw=" + hashedPassword);
         const loginSuccessJSON = await loginSuccess.json();
+        console.log(loginSuccessJSON);
 
         if (loginSuccessJSON.loginStatus === "success") {
             navigate('/');
@@ -52,12 +53,12 @@ function LoginPage () {
                         <tbody>
                             <tr>
                                 <td className = "td">
-                                    <input className = "loginbar" type = "text" id = "username" name = "username" placeholder = 'Enter Username or Email' autoFocus/>
+                                    <input className = "loginbar" type = "text" id = "username" name = "username" placeholder = 'Enter Username or Email' spellcheck="false" autoFocus/>
                                 </td>
                             </tr>
                             <tr>
                                 <td className = "td">
-                                    <input className = "loginbar" name = "password" type = "password" id = "password" placeholder = 'Enter Password'/>
+                                    <input className = "loginbar" name = "password" type = "password" id = "password" spellcheck="false" placeholder = 'Enter Password'/>
                                 </td>
                             </tr>
                             <tr>

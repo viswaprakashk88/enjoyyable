@@ -100,12 +100,10 @@ app.get("/checkLoginCredentials", (req, res) => {
     }
     documentClient.get(params, (err, data) => {
       if (err) {
-        console.log("error in fetching the user records : " + err);
         res.send(err)
       }
       else{
         try {
-          console.log(data["Item"]["password"] + ", " + loginPassword);
           if (data["Item"]["password"] === loginPassword ) {
             res.send({loginStatus : "success", ok : true});
             return;
@@ -187,7 +185,6 @@ app.post("/validateSignup", async (req, res) => {
 app.post("/searchUser", async (req, res) => {
   const { userHint, username } = req.body;
   var documentClient = new AWS.DynamoDB.DocumentClient();
-  console.log(userHint);
   const paramsForUsers = {
     TableName : "enjoyyable_users",
     FilterExpression : "contains(#username, :username) OR contains(#name, :name)",
@@ -217,8 +214,6 @@ app.post("/searchUser", async (req, res) => {
 app.post("/getRequests", async (req, res) => {
   const { userHint, username } = req.body;
   var documentClient = new AWS.DynamoDB.DocumentClient();
-  console.log(userHint);
-  console.log(username);
 
   const paramsForRequests = {
     TableName : "connection_requests",
@@ -245,7 +240,6 @@ app.post("/getRequests", async (req, res) => {
 app.post("/sendConnectionRequest", (req, res) => {
   const {sendFromUsername, sendTime, sendToUsername, sendName, sendMyName} = req.body;
   const documentClient = new AWS.DynamoDB.DocumentClient();
-  console.log("nameOfUser : " + sendMyName);
   const params = {
     TableName : "connection_requests",
     Item : {
@@ -340,7 +334,108 @@ app.post("/getUserInfo", (req, res) => {
     if (err) {
       res.send({ok : false, error_message : err});
     }
+    
     res.send({items : data});
+  });
+});
+
+app.post("/getFriends" , (req, res) => {
+  const {username} = req.body;
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  const paramsToGetFriends = {
+    TableName : "connection_requests",
+    FilterExpression : "contains(#username, :username) AND #friendshipStatus = :friendshipStatus",
+    ExpressionAttributeNames : {
+      "#username" : "username",
+      "#friendshipStatus" : "friendshipStatus"
+    },
+    ExpressionAttributeValues : {
+      ":username" : username,
+      ":friendshipStatus" : "friends"
+    }
+  };
+  documentClient.scan(paramsToGetFriends, (err, data) => {
+    if (err) {
+      res.send({ok : false, err : err.message});
+    }
+    
+    if (data && data["Items"]){
+      tempData = data["Items"].filter((item) => {
+        splittedParts = item["username"].split("#&#");
+        return splittedParts[0] === username || splittedParts[1] === username;
+      })
+      res.send({ok : true, items : tempData});
+    }
+    else {
+      res.send({items : data});
+    }
+  });
+});
+
+
+//Route to check whether the given groupId already exists or not.
+app.post ("/checkGroupId", (req, res) => {
+  const {groupIdname} = req.body;
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  const paramsToCheckGroupId = {
+    TableName : "groups",
+    FilterExpression : "groupid = :groupid",
+    ExpressionAttributeValues : {
+      ":groupid" : groupIdname
+    }
+  };
+  documentClient.scan(paramsToCheckGroupId, (err, data) => {
+    if (err) {
+      res.send({ok : false, error_message : err.message});
+      return;
+    }
+
+    res.send({ok : true, exists : data["Items"].length > 0});
+  });
+});
+
+
+//Route to create a group name
+app.post ("/createGroup", (req, res) => {
+  const {groupIdname, groupName, groupMembers, groupAdmin} = req.body;
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  const paramsToCreateGroup = {
+    TableName : "groups",
+    Item : {
+      "groupid" : groupIdname,
+      "groupName" : groupName,
+      "groupMembers" : groupMembers,
+      "groupAdmin" : groupAdmin
+    }
+  };
+  documentClient.put(paramsToCreateGroup, (err, data) => {
+    if (err) {
+      res.send({ok : false, error_message : err.message});
+      return;
+    }
+    res.send({ok : true, created : true});
+  });
+});
+
+app.post ("/getGroups", (req, res) => {
+  const {username} = req.body;
+  const paramsToGetGroups = {
+    TableName : "groups",
+    FilterExpression : "contains(#groupMembers, :username)",
+    ExpressionAttributeNames : {
+      "#groupMembers" : "groupMembers"
+    }, 
+    ExpressionAttributeValues : {
+      ":username" : username
+    }
+  };
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  documentClient.scan(paramsToGetGroups, (err, data) => {
+    if (err) {
+      res.send({ok : false, error_message : err.message});
+      return;
+    }
+    res.send({ ok : true, items : data.Items});
   });
 });
 
