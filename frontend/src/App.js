@@ -19,22 +19,26 @@ function App(){
 
     const [message,setMessage] = useState(null);
     const {spotifyPlayer} = useContext(PlayerContext);
-    useEffect( () => {
+    useEffect ( () => {
         if (window.localStorage.getItem("searchedUser"))
-        {
-            window.localStorage.removeItem("searchedUser");
-            window.localStorage.removeItem("searchedUserList");
-        }
-        if (window.localStorage.getItem("searchedSongName")) {
-            window.localStorage.removeItem("searchedSongName");
-            window.localStorage.removeItem("searchedSongsList");
-        }
-        if (window.localStorage.getItem("friendsList")) {
-            window.localStorage.removeItem("friendsList");
-        }
+            {
+                window.localStorage.removeItem("searchedUser");
+                window.localStorage.removeItem("searchedUserList");
+            }
+            if (window.localStorage.getItem("searchedSongName")) {
+                window.localStorage.removeItem("searchedSongName");
+                window.localStorage.removeItem("searchedSongsList");
+            }
+            if (window.localStorage.getItem("friendsList")) {
+                window.localStorage.removeItem("friendsList");
+            }
+    }, []);
+    useEffect( () => {
+        
         const accessTokenChecker = async () => {
         
             if(!window.localStorage.getItem('accessToken')){
+                console.log("time diff is not more than 1 hour");
                 await fetch('https://localhost:3001/accessToken?code=' + code, {
                     method : 'GET'
                 }).then(res => res.json())
@@ -54,11 +58,21 @@ function App(){
                 const lastTokenTime = localStorageTime.getTime() + '';
                 const timeGapAccessToken = Math.floor((presentTime - lastTokenTime)/1000);
                 const refreshToken = window.localStorage.getItem('refreshToken');
+                console.log("time diff is more than 1 hour" + timeGapAccessToken);
                 //If the time difference is greater than an hour, retrieve the accessToken again
                 if (timeGapAccessToken > 3600) {
-                    var accessTokenRefresh = await fetch('https://localhost:3001/refreshToken?refreshToken=' + refreshToken, {
-                        method : 'GET'
+                    console.log("Inside refresh token");
+                    var accessTokenRefresh = await fetch('https://localhost:3001/refreshToken', {
+                        method : 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json'
+                        },
+                        body : JSON.stringify({
+                            currentDateTime: currentDateTime,
+                            refreshToken: refreshToken
+                        })
                     });
+                    console.log("Inside refresh token");
                     accessTokenRefresh = await accessTokenRefresh.json();
                     window.localStorage.setItem('accessToken', accessTokenRefresh.accessToken);
                     window.localStorage.setItem('accessTokenTime', currentDateTime);

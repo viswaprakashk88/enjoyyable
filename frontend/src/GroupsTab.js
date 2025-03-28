@@ -5,7 +5,7 @@ import GroupCard from './GroupCard';
 function GroupsTab () {
     const {groupTab, setGroupTab} = useContext(PlayerContext);
     const cachedGroups = window.localStorage.getItem("groups") ? JSON.parse(window.localStorage.getItem("groups")) : [];
-    const [groupsList, setGroupsList] = useState(cachedGroups || []);
+    const [groupsList, setGroupsList] = useState(cachedGroups && cachedGroups.items || []);
 
     useState( async () => {
         if ( !window.localStorage.getItem("groups") ) {
@@ -18,13 +18,17 @@ function GroupsTab () {
                     username : window.localStorage.getItem("username")
                 })
             });
+            groups = await groups.json();
+            window.localStorage.setItem("groups", JSON.stringify(groups));
+            setGroupsList(groups.items);
         }
-        groups = await groups.json();
-        setGroupsList(groups.items);
+        console.log();
     }, []);
 
     return (
         <div>
+            <br/>
+            <br/>
             <center>
                 <table>
                     <tbody>

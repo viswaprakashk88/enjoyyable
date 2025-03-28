@@ -400,9 +400,13 @@ ul {
 }
 
 .groupCardName{
-  padding: 10px 50px;
+  padding: 10px 60px;
   color: #fc4a03;
   border-radius: 8px;
+}
+
+.groupBackButton {
+  cursor: pointer;
 }
 
 @keyframes App-logo-spin {

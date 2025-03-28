@@ -65,6 +65,7 @@ function Search() {
             setSongDetails(songObject);
             setSongClick(prev => prev + 1);
             window.localStorage.setItem("songDetails", JSON.stringify(searchedList[id]));
+            console.log(songDetails);
         }
     }
 

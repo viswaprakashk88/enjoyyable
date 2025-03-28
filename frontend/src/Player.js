@@ -14,53 +14,7 @@ function Player () {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isStarted, setIsStarted] = useState(false);
   const [deviceId, setDeviceId] = useState("");
-  
-
-  useEffect( () => {
-    //function to play a song
-    const playSong = ({songDetails},deviceId) => {
-
-      clearInterval(intervalForSlider);
-      setIsPlaying(true);
-
-      if (isPlaying) {
-        intervalForSlider = setInterval( () => {
-          setSliderValue(prevValue => prevValue + 100);
-        }, 100);
-        if (sliderValue > songDetails.duration_ms) {
-          clearInterval(intervalForSlider);
-        }
-      }
-
-      fetch('https://api.spotify.com/v1/me/player/play?device_id=' + deviceId, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          uris: [songDetails ? songDetails.uri : null]
-        }),
-      })
-        .then(response => { 
-          if (response.ok) {
-            console.log('Playback started!');
-          } else {
-            console.error('Failed to start playback:', response.statusText);
-          }
-        })
-        .catch(error => {
-          console.error('Error starting playback:', error);
-        });
-    }
-
-    if (deviceId !== "") {
-      playSong({songDetails}, deviceId);
-    }
-    
-
-  }, [songDetails]);
-
+  console.log("1"==1);
   useEffect( () => {
     spotifyPlayer.connect().then(success => {
       if (success) {
@@ -69,12 +23,14 @@ function Player () {
       else{
           console.log("Failed")
       }
-  
     });
+    // console.log(spotifyPlayer);
     //ready Listener for spotifyPlayer
     spotifyPlayer.addListener('ready', ({device_id}) => {
+      console.log(device_id);
       setDeviceId(device_id);
     });
+    console.log("device id");
     spotifyPlayer.addListener('player_state_changed', ({device_id}) => {
       setIsStarted(true);
       if ( window.localStorage.getItem("previous_song") !== songDetails.id ) {
@@ -140,9 +96,72 @@ function Player () {
 
   }, [socket]);
 
-  
+  // useEffect( async () => {
+  //   if (sliderValue > songDetails.duration_ms) {
+  //     console.log("exceeded");
+  //     // setSongDetails(JSON.parse(window.localStorage.getItem("next_songDetails")));
+  //     // var res = await fetch("https://api.spotify.com/v1/me/player/queue", {
+  //     //   method: 'PUT',
+  //     //   headers: {
+  //     //     'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
+  //     //     'Content-Type': 'application/json',
+  //     //   },
+  //     //   body: JSON.stringify({
+  //     //     uris: [songDetails ? songDetails.uri : null]
+  //     //   })}
+  //     // );
+  //     // res = await res.json();
+  //     // console.log(res);
+  //   }
 
-  
+  // },[sliderValue]);
+
+  useEffect( () => {
+    //function to play a song
+    const playSong = ({songDetails},deviceId) => {
+
+      clearInterval(intervalForSlider);
+      setIsPlaying(true);
+
+      if (isPlaying) {
+        intervalForSlider = setInterval( () => {
+          setSliderValue(prevValue => prevValue + 100);
+        }, 100);
+        if (sliderValue > songDetails.duration_ms) {
+          clearInterval(intervalForSlider);
+        }
+      }
+      console.log(deviceId);
+
+      fetch('https://api.spotify.com/v1/me/player/play?device_id=' + deviceId, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${window.localStorage.getItem('accessToken')}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          uris: [songDetails ? songDetails.uri : null]
+        }),
+      })
+        .then(response => { 
+          if (response.ok) {
+            console.log('Playback started!');
+          } else {
+            console.error('Failed to start playback:', response.statusText);
+          }
+        })
+        .catch(error => {
+          console.error('Error starting playback:', error);
+        });
+    }
+    console.log(deviceId);
+    // if (deviceId !== "") {
+      playSong({songDetails}, deviceId);
+
+    // }
+    
+
+  }, [songDetails]);
 
   //Function for play/pause button
   const togglePlay = () => {

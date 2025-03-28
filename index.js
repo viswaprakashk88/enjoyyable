@@ -1,7 +1,6 @@
 const express = require('express');
 const http = require('http');
 const https = require('https');
-require('dotenv').config();
 const socketIo = require('socket.io');
 const fs = require("fs");
 const querystring = require('querystring');
@@ -12,6 +11,8 @@ const cors=require("cors");
 const {Server}  = require("socket.io");
 require('dotenv').config();
 const AWS = require('aws-sdk');
+const axios = require('axios');
+
 
 app.use(cors({
   origin: "*"
@@ -19,9 +20,11 @@ app.use(cors({
 
 app.use(express.json());
 
-var CLIENT_ID = '';
-var CLIENT_SECRET = '';
+const CLIENT_ID = process.env.CLIENT_ID;
+const CLIENT_SECRET = process.env.CLIENT_SECRET;
 var REDIRECT_URI = 'https://localhost:3001';
+
+console.log(CLIENT_ID);
 
 app.options('*', cors());
 
@@ -113,6 +116,7 @@ app.get("/checkLoginCredentials", (req, res) => {
         }
 
         res.send({loginStatus : "failed", ok : true});
+
       }
     });
 });
@@ -237,6 +241,7 @@ app.post("/getRequests", async (req, res) => {
 });
 
 
+//Route to Store the connection request sent 
 app.post("/sendConnectionRequest", (req, res) => {
   const {sendFromUsername, sendTime, sendToUsername, sendName, sendMyName} = req.body;
   const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -339,6 +344,7 @@ app.post("/getUserInfo", (req, res) => {
   });
 });
 
+//Route to fetch the user's friends list
 app.post("/getFriends" , (req, res) => {
   const {username} = req.body;
   const documentClient = new AWS.DynamoDB.DocumentClient();
@@ -417,6 +423,7 @@ app.post ("/createGroup", (req, res) => {
   });
 });
 
+//Route to get the groups that the user is part of
 app.post ("/getGroups", (req, res) => {
   const {username} = req.body;
   const paramsToGetGroups = {
@@ -439,10 +446,10 @@ app.post ("/getGroups", (req, res) => {
   });
 });
 
-
-app.get("/appendGroups", (req,res) => {
-  res.send("hi");
-});
+//Sample API
+// app.get("/appendGroups", (req,res) => {
+//   res.send("hi");
+// });
 
 //Spotify Authorization
 var states = generateRandomString();
@@ -481,30 +488,44 @@ app.get('/accessToken', (req, res) => {
 });
 
 //Route for Refreshing the Access Token given the refresh token
-app.get('/refreshToken', function (req, res) {
-  var refreshToken = req.query.refreshToken;
-  var authOptions = {
-    url : 'https://accounts.spotify.com/api/token',
-    json: true,
-    headers: {
-      'content-type': 'application/x-www-form-urlencoded',
-      'Authorization': 'Basic ' + (new Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64'))
-    },
-    form: {
-      grant_type: 'refresh_token',
-      refresh_token: refreshToken
-    }
+// if (!error && response.statusCode === 200) {
+  //   res.send({message : 'Message From Prakash The Lord', accessToken: body.access_token, refreshToken: body.refresh_token});
+  // }
+app.post('/refreshToken', async function (req, res) {
+  try {
+      const refreshToken = req.body.refreshToken;
+      console.log("Received Refresh Token:", refreshToken);
+      console.log(req.body.currentDateTime);
+      
+      const refreshTokenResponse = await axios.post("https://accounts.spotify.com/api/token", 
+          new URLSearchParams({
+              grant_type: 'refresh_token',
+              refresh_token: refreshToken 
+          }).toString(), 
+          {
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded',
+                  'Authorization': 'Basic ' + Buffer.from(CLIENT_ID + ':' + CLIENT_SECRET).toString('base64')
+              }
+          }
+      );
+      console.log(refreshTokenResponse);
+      if (refreshTokenResponse.status === 200) {
+        
+          res.send({
+              message: 'Message From Prakash The Lord',
+              accessToken: refreshTokenResponse.data.access_token,
+              refreshToken: refreshTokenResponse.data.refresh_token || refreshToken // Use old refreshToken if new one is not provided
+          });
+      }
+  } catch (error) {
+      console.error("Error refreshing token:", error.response ? error.response.data : error.message);
+      res.status(500).send({ error: 'Failed to refresh token' });
   }
-
-  request.post(authOptions, function (error, response, body) { 
-    if (!error && response.statusCode === 200) {
-      return res.json({message : 'Message From Prakash The Lord', accessToken: body.access_token, refreshToken: body.refresh_token});
-    }
-  });
 });
 
 
 //Server Listener
-server.listen(3001,() => {
+server.listen(3001, () => {
   console.log('Socket.IO server is running on port 3001');
 });
