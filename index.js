@@ -13,8 +13,6 @@ require('dotenv').config();
 const AWS = require('aws-sdk');
 const axios = require('axios');
 
-
-
 app.use(cors({
   origin: "*"
 }));
@@ -190,6 +188,7 @@ app.post("/validateSignup", async (req, res) => {
 app.post("/searchUser", async (req, res) => {
   const { userHint, username } = req.body;
   var documentClient = new AWS.DynamoDB.DocumentClient();
+  
   const paramsForUsers = {
     TableName : "enjoyyable_users",
     FilterExpression : "contains(#username, :username) OR contains(#name, :name)",
@@ -349,6 +348,7 @@ app.post("/getUserInfo", (req, res) => {
 app.post("/getFriends" , (req, res) => {
   const {username} = req.body;
   const documentClient = new AWS.DynamoDB.DocumentClient();
+  
   const paramsToGetFriends = {
     TableName : "connection_requests",
     FilterExpression : "contains(#username, :username) AND #friendshipStatus = :friendshipStatus",
