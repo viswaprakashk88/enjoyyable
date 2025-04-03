@@ -14,6 +14,7 @@ const AWS = require('aws-sdk');
 const axios = require('axios');
 
 
+
 app.use(cors({
   origin: "*"
 }));
