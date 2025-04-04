@@ -30,6 +30,7 @@ function GroupsTab () {
             <br/>
             <br/>
             <center>
+                {groupsList.length < 1 && <h4>Your Groups Will Appear Here</h4>}
                 <table>
                     <tbody>
                         {groupsList.map((item, index) => (
@@ -38,6 +39,7 @@ function GroupsTab () {
                     </tbody>
                 </table>
             </center>
+
             <div className = "createGroupButton" onClick={ () => {setGroupTab(2)} }><i className="fa fa-plus" aria-hidden="true"></i> Create Group</div>
         </div>
     );

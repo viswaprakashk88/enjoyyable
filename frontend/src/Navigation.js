@@ -9,6 +9,7 @@ import { getSocket } from './SocketService';
 import Requests from './Requests';
 import { ResourceGroups } from 'aws-sdk';
 import Groups from './Groups';
+import Profile from './Profile';
 
 
 
@@ -85,6 +86,10 @@ function Navigation() {
         navigate("/");
     }
 
+    const handleProfile = () => {
+        setTabNumber(5);
+    }
+
     const handleAccessTokenExpiry = async () => {
         const currentDateTime = new Date();
         const presentTime =currentDateTime.getTime() + '';
@@ -108,7 +113,7 @@ function Navigation() {
                 <i className="fa fa-user profile-icon" aria-hidden="true" id = "profileIcon" onMouseOver = {() => {setProfileHover(true)} } onMouseLeave = { () => {setTimeout(() => {setProfileHover(false)}, 2000)} }></i>
                 <div>
                     <ul id = "profileDropdown" onMouseOver={() => {setProfileHover(true)}} onMouseLeave={() => {setProfileHover(false)}} style = {{display: profileHover ? "inline" : "none"}}>
-                        <li onClick = {() => {console.log("good profile");}}>Profile</li>
+                        <li onClick = {handleProfile}>Profile</li>
                         <li onClick = {handleLogout}>Log Out</li>
                     </ul>
                 </div>
@@ -124,7 +129,7 @@ function Navigation() {
             {tabNumber === 2 && <SearchUser/>}
             {tabNumber === 3 && <Groups/>}
             {tabNumber === 4 && <Requests/>}
-            
+            {tabNumber === 5 && <Profile/>}
         </div>
     );
 }

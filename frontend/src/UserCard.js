@@ -5,7 +5,6 @@ function UserCard ({userData}) {
     const [friendStatus, setFriendStatus] = useState("Connect");
     var name = userData.name.split("#%#");
     var name = name[0] === window.localStorage.getItem("name") ? name[1] : name[0];
-    name = name.split(" ").map(item => item.charAt(0).toUpperCase() + item.slice(1)).join(" ");
     const presentName = window.localStorage.getItem("name");
     useEffect( () => {
         if (connections && userData.user in connections && document.getElementById("requestButton_" + userData.user)) {

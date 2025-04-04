@@ -21,17 +21,20 @@ function App(){
     const {spotifyPlayer} = useContext(PlayerContext);
     useEffect ( () => {
         if (window.localStorage.getItem("searchedUser"))
-            {
-                window.localStorage.removeItem("searchedUser");
-                window.localStorage.removeItem("searchedUserList");
-            }
-            if (window.localStorage.getItem("searchedSongName")) {
-                window.localStorage.removeItem("searchedSongName");
-                window.localStorage.removeItem("searchedSongsList");
-            }
-            if (window.localStorage.getItem("friendsList")) {
-                window.localStorage.removeItem("friendsList");
-            }
+        {
+            window.localStorage.removeItem("searchedUser");
+            window.localStorage.removeItem("searchedUserList");
+        }
+        if (window.localStorage.getItem("searchedSongName")) {
+            window.localStorage.removeItem("searchedSongName");
+            window.localStorage.removeItem("searchedSongsList");
+        }
+        if (window.localStorage.getItem("friendsList")) {
+            window.localStorage.removeItem("friendsList");
+        }
+        if (window.localStorage.getItem("groups")) {
+            window.localStorage.removeItem("groups");
+        }
     }, []);
     useEffect( () => {
         
@@ -53,7 +56,7 @@ function App(){
 
                 //Calculating the time difference between present and the last token retrieval time
                 const currentDateTime = new Date();
-                const presentTime =currentDateTime.getTime() + '';
+                const presentTime = currentDateTime.getTime() + '';
                 const localStorageTime = new Date(window.localStorage.getItem('accessTokenTime') + '');
                 const lastTokenTime = localStorageTime.getTime() + '';
                 const timeGapAccessToken = Math.floor((presentTime - lastTokenTime)/1000);

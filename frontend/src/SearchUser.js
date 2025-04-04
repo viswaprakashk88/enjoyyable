@@ -1,6 +1,8 @@
 import React, { useEffect, useState} from 'react';
 import UserCard from './UserCard';
 import LoadingAnimation from './LoadingAnimation.gif';
+import SearchUserAnimation from './SearchUser.gif';
+
 
 function SearchUser () {
 
@@ -107,6 +109,7 @@ function SearchUser () {
                     </tbody>
                 </table>
                 {searchedUserList.length < 1 && searched && <img src = {LoadingAnimation} style = {{width: "100px",height: "100px"}} />}
+                {!searched && searchedUserList.length < 1 && <img style = {{width: "270px",height: "200px", borderRadius: "10px"}} src = {SearchUserAnimation} />}
             </center>
         </div>
     );

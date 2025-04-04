@@ -4,7 +4,8 @@ let socket;
 export const initializeSocket = (userId) => {
     if(!socket) {
         socket = io.connect("https://localhost:3001", {query : {userId}});
-        console.log("Socket Initialized, ", userId);
+        console.log("Socket Initialized, ");
+        console.log(socket.id);
     }
 }
 

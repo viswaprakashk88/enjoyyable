@@ -77,7 +77,7 @@ function CreateGroup () {
             document.getElementById("submitButton").innerHTML = "Create Group";
             return;
         }
-        if (groupMembers === "") {
+        if (membersList.length === 0) {
             setCodemessage("Add Group Members To Continue");
             setCodecolor("red");
             setCodered("inline");
@@ -100,9 +100,10 @@ function CreateGroup () {
             setCodered("inline");
             setCodemessage("Group ID Already Exists!");
             setCodecolor("red");
-            document.getElementById("submitButton").innerHTML = "Create Group";
+            // document.getElementById("submitButton").innerHTML = "Create Group";
             return;
         }
+        const presentTime = new Date();
         var creatingGroup = await fetch("https://localhost:3001/createGroup", {
             method : "POST",
             headers: {
@@ -112,7 +113,8 @@ function CreateGroup () {
                 groupName : groupName,
                 groupIdname : groupId,
                 groupMembers : groupMembers,
-                groupAdmin : window.localStorage.getItem("username")
+                groupAdmin : window.localStorage.getItem("username"),
+                dateTime: presentTime + ""
             })
         });
         creatingGroup = await creatingGroup.json();

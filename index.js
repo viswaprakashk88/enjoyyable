@@ -25,7 +25,7 @@ var REDIRECT_URI = 'https://localhost:3001';
 
 console.log(CLIENT_ID);
 
-app.options('*', cors());
+
 
 //For HTTPS-Secure Transmission
 const options = {
@@ -309,9 +309,11 @@ app.post("/getAllRequests", (req, res) => {
     if (err) {
       res.send({ok : false, error_message : err});
     }
-    const filteredData = data.Items.filter(item => item.username.endsWith(username));
-    console.log(filteredData);
-    res.send({items : filteredData});
+    else{
+      const filteredData = data.Items.filter(item => item.username.endsWith(username));
+      console.log(filteredData);
+      res.send({items : filteredData});
+    }
   });
 });
 
@@ -340,7 +342,9 @@ app.post("/getUserInfo", (req, res) => {
       res.send({ok : false, error_message : err});
     }
     
-    res.send({items : data});
+    else{
+      res.send({items : data});
+    }
   });
 });
 
@@ -404,7 +408,7 @@ app.post ("/checkGroupId", (req, res) => {
 
 //Route to create a group name
 app.post ("/createGroup", (req, res) => {
-  const {groupIdname, groupName, groupMembers, groupAdmin} = req.body;
+  const {groupIdname, groupName, groupMembers, groupAdmin, dateTime} = req.body;
   const documentClient = new AWS.DynamoDB.DocumentClient();
   const paramsToCreateGroup = {
     TableName : "groups",
@@ -412,7 +416,8 @@ app.post ("/createGroup", (req, res) => {
       "groupid" : groupIdname,
       "groupName" : groupName,
       "groupMembers" : groupMembers,
-      "groupAdmin" : groupAdmin
+      "groupAdmin" : groupAdmin,
+      "dateTime" : dateTime
     }
   };
   documentClient.put(paramsToCreateGroup, (err, data) => {
@@ -445,6 +450,74 @@ app.post ("/getGroups", (req, res) => {
     }
     res.send({ ok : true, items : data.Items});
   });
+});
+
+//fetching Group Members' names
+app.post("/getNames", (req, res) => {
+  const keys = req.body.usernames.map(username => ({
+    user: username
+  }));
+  console.log(keys);
+  const attributesToGet = ['#user', '#name']
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  const paramsToGetNames = {
+    RequestItems: {
+      "enjoyyable_users": {
+        Keys: keys,
+        ProjectionExpression: "#user, #name",
+        ExpressionAttributeNames: {
+          "#user": "user",
+          "#name": "name"
+        }
+      },
+      
+    },
+    
+  }
+  try {
+    documentClient.batchGet(paramsToGetNames, (err, data) => {
+      if (err) {
+        res.send({ok: false, error_message: "Error Fetching Names Of The Group "+ err.message});
+      }
+      else {
+        res.send({ok: true, items:data.Responses["enjoyyable_users"]});
+      }
+    });
+  }
+  catch (exception) {
+    res.send({ok: false, error_message: "Error in Try Fetching Names Of The Group"});
+  }
+});
+
+//Updating the name of the user profile
+app.post ("/updateName", (req, res) => {
+
+  const {name,username} = req.body;
+  const documentClient = new AWS.DynamoDB.DocumentClient();
+  console.log(name + ", " + username + " in updateName Route");
+  const paramsToGetGroups = {
+    TableName : "enjoyyable_users",
+    Key : {user : username},
+    UpdateExpression: 'set #name = :name',
+    ExpressionAttributeNames: {
+      "#name": "name"
+    },
+    ExpressionAttributeValues : {
+      ":name": name
+    }
+  };
+  try{
+    documentClient.update(paramsToGetGroups, (err, data) => {
+      if (err) {
+        res.send({ok : false, error_message : err.message});
+      }
+      else{
+        res.send({ ok : true, items : data.Items});
+      }
+    });
+  } catch (exception) {
+    res.send({ok: false, error_message: "Something went wrong!" + exception.message});
+  }
 });
 
 //Sample API
@@ -527,6 +600,6 @@ app.post('/refreshToken', async function (req, res) {
 
 
 //Server Listener
-server.listen(3001, () => {
+server.listen(3001,   () => {
   console.log('Socket.IO server is running on port 3001');
 });

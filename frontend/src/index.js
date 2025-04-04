@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import LoginPage from './LoginPage';
 
 export const PlayerContext = createContext();
 
@@ -18,6 +19,10 @@ function IndexHelp () {
     const [partyMode, setPartyMode] = useState(false);
     const [groupTab, setGroupTab] = useState(1);
     const [groupName, setGroupName] = useState("");
+    const [groupMembers,setGroupMembers] = useState([]);
+    const [createdOn, setCreatedOn] = useState("");
+    const [groupId, setGroupId] = useState("");
+    console.log("phone lo nunchi");
     //Spotify Web Playback Initialiazation
     document.title = "Enjoyabl";
     window.onSpotifyWebPlaybackSDKReady = async () => {
@@ -32,13 +37,15 @@ function IndexHelp () {
     }
     return (
         (spotifyPlayer) ?
-            (<PlayerContext.Provider value={{ spotifyPlayer, setSpotifyPlayer, songDetails, setSongDetails, partyMode, setPartyMode, groupTab, setGroupTab, groupName, setGroupName}}>
+            (<PlayerContext.Provider value={{ spotifyPlayer, setSpotifyPlayer, songDetails, setSongDetails, partyMode, setPartyMode, groupTab, setGroupTab, groupName, setGroupName, groupMembers, setGroupMembers, createdOn, setCreatedOn, groupId, setGroupId}}>
                 <App />
             </PlayerContext.Provider> )
-            :
-            (<div>Loading...</div>)
+            : (<div>Loading...</div>)
     );
+
+
 }
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(    

@@ -186,12 +186,13 @@ input[type="range"] {
 }
 .searchBar {
   width: 500px;
+  caret-shape: "20px";
   height: 40px;
   text-align: center;
   outline: 0;
   margin: 25px 0px 20px 0px;
   font-size: 20px;
-  font-weight: 500;
+  font-weight: bold;
   color:blue;
   padding: 10px;
   /* border: 0.1rem solid #8684f2; */
@@ -401,12 +402,64 @@ ul {
 
 .groupCardName{
   padding: 10px 60px;
-  color: #fc4a03;
+  color: #08109e;
   border-radius: 8px;
+
 }
 
 .groupBackButton {
   cursor: pointer;
+  margin-top: -10px;
+}
+
+.groupMemberCard {
+  margin: 5px;
+  background-color: #61dafb;
+  width: 20%;
+  font-size: 22px;
+  font-weight: bold;
+  text-align: left;
+  border-radius: 10px;
+  color: #0367fc;
+  padding: 10px 30px 5px 30px;
+}
+
+.ProfileEditIcon {
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+}
+
+.profilePage {
+  margin-top: 35px;
+  width: 60%;
+  border-radius: 5%;
+  box-shadow:  0 20px 30px 0 rgba(1, 9, 251, 0.2), 0 10px 20px 0 rgba(4, 91, 241, 0.19);
+  padding-left: 70px;
+}
+
+.profileInput {
+  height: 38px;
+  outline: 0;
+  border: solid 1px #8684f2;
+  padding: 20px;
+  border-radius: 5px;
+}
+.profileInput:disabled {
+  color: black;
+  height: 38px;
+  outline: 0;
+  border: solid 1px #8684f2;
+  padding: 20px;
+  border-radius: 5px;
+  background-color: #fff;
+  cursor: not-allowed;
+}
+.container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  /* gap: 20px; */
+  padding-left: 30px;
 }
 
 @keyframes App-logo-spin {
