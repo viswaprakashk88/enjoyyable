@@ -94,7 +94,7 @@ function Player () {
 
   //Removing Slider if the sliderValue exceeds songDetails.duration_ms
   useEffect ( () => {
-    if (sliderValue > songDetails.duration_ms) {
+    if (songDetails && sliderValue > songDetails.duration_ms) {
       clearInterval(intervalForSlider);
       setSliderValue(0);
     }

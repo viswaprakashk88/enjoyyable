@@ -8,6 +8,10 @@ function Profile () {
     const [editText, setEditText] = useState("You Can Edit Your Name");
 
     useEffect(() => {
+
+        const date = new Date();
+
+        console.log("Time Zone is : " + date.getTimezoneOffset());
         if (userDetails?.name) {
           const capitalized = userDetails.name
             .split(" ")
@@ -122,6 +126,7 @@ function Profile () {
                         <br/>
                         <input disabled = {!editMode} type = "submit" style = {{width: "15%"}} onClick = {handleUpdate} className = "submitButton" value = "Update" />
                           
+                    <br/>
                     <br/>
                 </div>
                 

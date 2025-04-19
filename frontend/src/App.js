@@ -33,7 +33,7 @@ function App(){
             window.localStorage.removeItem("friendsList");
         }
         if (window.localStorage.getItem("groups")) {
-            window.localStorage.removeItem("groups");
+            window.localStorage.removeItem("groupsx");
         }
     }, []);
     useEffect( () => {
@@ -77,6 +77,7 @@ function App(){
                     });
                     console.log("Inside refresh token");
                     accessTokenRefresh = await accessTokenRefresh.json();
+                    console.log(accessTokenRefresh);
                     window.localStorage.setItem('accessToken', accessTokenRefresh.accessToken);
                     window.localStorage.setItem('accessTokenTime', currentDateTime);
                 }
