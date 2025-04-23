@@ -29,8 +29,8 @@ console.log(CLIENT_ID);
 
 //For HTTPS-Secure Transmission
 const options = {
-  key: fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem')
+  key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/fullchain.pem')
 };
 
 //Including the SSL Certificate into the server.
