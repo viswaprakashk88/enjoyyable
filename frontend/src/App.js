@@ -5,7 +5,7 @@ import io from "socket.io-client";
 import Login from './Login';
 import { initializeSocket, getSocket, disconnectSocket } from './SocketService';
 import ContextInit from './ContextInit';
-import { BrowserRouter as Router, Route, Routes, Link, BrowserRouter } from 'react-router-dom';
+import { Route, Routes, Link, BrowserRouter } from 'react-router-dom';
 import LoginPage from './LoginPage';
 import SignUp from './SignUp';
 import { PlayerContext } from './index';
@@ -19,6 +19,7 @@ function App(){
 
     const [message,setMessage] = useState(null);
     const {spotifyPlayer} = useContext(PlayerContext);
+    //Removing previously searched items from Search component
     useEffect ( () => {
         if (window.localStorage.getItem("searchedUser"))
         {
@@ -38,7 +39,7 @@ function App(){
     }, []);
     useEffect( () => {
         
-        const accessTokenChecker = async () => {
+        const accessTokenCheck = async () => {
         
             if(!window.localStorage.getItem('accessToken')){
                 console.log("time diff is not more than 1 hour");
@@ -83,7 +84,7 @@ function App(){
                 }
             }
         }
-        accessTokenChecker();
+        accessTokenCheck();
         
         return function cleanup() {
             //removing the socket listeners

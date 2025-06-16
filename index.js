@@ -5,17 +5,15 @@ const socketIo = require('socket.io');
 const fs = require("fs");
 const querystring = require('querystring');
 const Buffer = require('buffer').Buffer;
-const request = require('request')
+const request = require('request');
 const app = express();
-const cors=require("cors");
-const {Server}  = require("socket.io");
+const cors = require("cors");
+const {Server} = require("socket.io");
 require('dotenv').config();
 const AWS = require('aws-sdk');
 const axios = require('axios');
 
-app.use(cors({
-  origin: "*"
-}));
+app.use(cors({origin: "*"}));
 
 app.use(express.json());
 
@@ -26,11 +24,10 @@ var REDIRECT_URI = 'https://localhost:3001';
 console.log(CLIENT_ID);
 
 
-
 //For HTTPS-Secure Transmission
 const options = {
-  key: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/privkey.pem'),
-  cert: fs.readFileSync('/etc/letsencrypt/live/yourdomain.com/fullchain.pem')
+  key: fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem')
 };
 
 //Including the SSL Certificate into the server.
@@ -451,6 +448,11 @@ app.post ("/getGroups", (req, res) => {
     res.send({ ok : true, items : data.Items});
   });
 });
+
+// app.get("/redirectApi", (req, res) => {
+//   res.redirect("https://www.google.com");
+// });
+
 
 //fetching Group Members' names
 app.post("/getNames", (req, res) => {

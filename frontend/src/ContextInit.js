@@ -3,12 +3,14 @@ import Player from './Player';
 import Search from './Search';
 import LoginPage from './LoginPage';
 import Home from './Home';
+import Blogging from './Blogging';
 import Decision from './Decision';
 import Navigation from './Navigation';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import SignUp from './SignUp';
 import SearchUser from './SearchUser';
 import { getSocket } from './SocketService';
+import App from './App';
 
 
 
@@ -28,6 +30,7 @@ function ContextInit () {
                         <Route index element={<Decision />} />
                         <Route path="/SignUp" element={<SignUp />} />
                         <Route path="/LoginPage" element={<LoginPage />} />
+                        <Route path = "/Blogs" element = {<Blogging />} />
                     </Routes>
                     
                 </BrowserRouter>

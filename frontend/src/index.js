@@ -24,7 +24,6 @@ function IndexHelp () {
     const [groupId, setGroupId] = useState("");
     console.log("phone lo nunchi");
     //Spotify Web Playback Initialiazation
-    document.title = "Enjoyabl";
     window.onSpotifyWebPlaybackSDKReady = async () => {
         const player = new window.Spotify.Player({
             name : 'Prakash Application for Spotify',
